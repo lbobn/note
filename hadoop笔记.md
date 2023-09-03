@@ -120,7 +120,7 @@ namenode提供网络距离最近的ip
 
 ## MapReduce
 
-## YARN 分布式资源调度
+# YARN 分布式资源调度
 
 *核心架构*
 

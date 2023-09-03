@@ -277,3 +277,35 @@ if __name__ == '__main__':
 
 
 
+## 爬虫
+
+### urllib
+
+> python自带库，模拟浏览器发送请求
+>
+> 
+
+~~~python
+from urllib import request
+url = 'http://www.baidu.com/'
+response = request.urlopen(url)  # 返回HTTPResponse对象，此对象以字节形式读取
+content = response.read().decode('utf-8')  # 读取 
+line = response.readline().decode('utf-8')  # 读一行
+lines = response.readlines().decode('utf-8') # 读多行
+response.getcode()  # 获取响应码
+response.geturl()  # 获取url
+response.getheaders()
+~~~
+
+
+
+下载
+
+~~~python
+baidu_url = 'http://www.baidu.com/'
+
+request.urlretrieve(baidu_url, 'baidu.html')  # 下载页面，或图片等
+~~~
+
+
+
