@@ -281,9 +281,10 @@ if __name__ == '__main__':
 
 ### urllib
 
+#### 基本
+
 > python自带库，模拟浏览器发送请求
 >
-> 
 
 ~~~python
 from urllib import request
@@ -299,7 +300,7 @@ response.getheaders()
 
 
 
-下载
+#### 下载
 
 ~~~python
 baidu_url = 'http://www.baidu.com/'
@@ -307,5 +308,78 @@ baidu_url = 'http://www.baidu.com/'
 request.urlretrieve(baidu_url, 'baidu.html')  # 下载页面，或图片等
 ~~~
 
+#### 请求对象的定制
 
+反爬机制1：UA : User-Agent，中文名为用户代理，是一个特殊字符串头，使的服务器能够识别客户使用的操作系统及版本，CPU类型、浏览器及版本。浏览器内核、浏览器渲染引擎、浏览器语言、浏览器插件。
+
+需要自行包装，即加上UA
+
+> url的组成:
+>
+> url: https://www.baidu.com/s?wd=周杰伦
+>
+> | http / https | www.baidu.com | 80/443 | s    | wd=周杰伦 | #    |
+> | ------------ | ------------- | ------ | ---- | --------- | ---- |
+> | 协议         | 主机          | 端口号 | 路径 | 参数      | 锚点 |
+>
+> 常用端口号：
+>
+> - http/https : 80 / 443
+> - mysql ：3306
+> - oracle : 1521
+> - redis ： 6379
+> - MongoDB：27017
+>
+> ~~~python
+> import urllib.request
+> 
+> url = 'https://www.baidu.com/'
+> 
+> headers = {
+>     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'
+> }
+> 
+> # 定制请求对象，其中headers参数需要关键字传参
+> request = urllib.request.Request(url, headers=headers)
+> 
+> # 传入请求对象，打开url
+> response = urllib.request.urlopen(request)
+> 
+> print(response.read().decode('utf8'))
+> ~~~
+
+#### 编解码
+
+1. get请求方式(单参数) ：urllib.parse.quote()
+
+~~~python
+import urllib.request
+import urllib.parse
+
+url = 'https://www.baidu.com/s?wd='
+# 获取中文的Unicode编码
+name = urllib.parse.quote('周杰伦')
+
+url = url + name
+print(url)
+...
+~~~
+
+2. get请求方式(多参数)：urllib.parse.urlencode()
+
+~~~python
+import urllib.request
+import urllib.parse
+
+url = 'https://www.baidu.com/s?'
+
+data = {
+    'wd': '周杰伦',
+    'sex': '男',
+    'address': '中国台湾省'
+}
+
+new_data = urllib.parse.urlencode(data)
+url = url + new_data
+~~~
 
