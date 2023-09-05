@@ -310,7 +310,7 @@ request.urlretrieve(baidu_url, 'baidu.html')  # 下载页面，或图片等
 
 #### 请求对象的定制
 
-反爬机制1：UA : User-Agent，中文名为用户代理，是一个特殊字符串头，使的服务器能够识别客户使用的操作系统及版本，CPU类型、浏览器及版本。浏览器内核、浏览器渲染引擎、浏览器语言、浏览器插件。
+==反爬机制1==：UA : User-Agent，中文名为用户代理，是一个特殊字符串头，使的服务器能够识别客户使用的操作系统及版本，CPU类型、浏览器及版本。浏览器内核、浏览器渲染引擎、浏览器语言、浏览器插件。
 
 需要自行包装，即加上UA
 
@@ -382,4 +382,24 @@ data = {
 new_data = urllib.parse.urlencode(data)
 url = url + new_data
 ~~~
+
+3. post请求方式：
+
+~~~python
+import urllib.request
+import urllib.parse
+
+url = f"{post请求路径}"
+
+data = {
+    'query': 'hello'
+}
+headers = {...}
+data = urllib.parse.urlencode().encode('utf-8')    # post请求需要encode编码
+request = urllib.request.Request(url,data,headers)
+~~~
+
+==反爬机制2==：cookie,请求头中需要携带Cookie
+
+
 
