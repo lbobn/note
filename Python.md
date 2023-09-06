@@ -401,5 +401,73 @@ request = urllib.request.Request(url,data,headers)
 
 ==反爬机制2==：cookie,请求头中需要携带Cookie
 
+#### 异常
 
+> 包含 `urllib.error.HTTPerror` 和 `urllib.error.URLerror`两个异常类，可以对其进行捕获
+
+#### Cookie登录
+
+> Cookie会携带登录信息等，可以在网页登录后获取他的Cookie，再写到请求头中来爬取登录后的页面
+
+#### handler处理器
+
+> 定制更高级的请求头
+>
+> ~~~python
+> # 获取handler对象
+> handler = urllib.request.HTTPHandler()
+> # 传入handler对象
+> opener = urllib.request.build_opener(handler)
+> # 调用open()
+> response = opener.open(request)
+> ~~~
+>
+> 代理
+>
+> ~~~python
+> # ...
+> proxies = {
+>     # 代理ip
+>     'http': '117.26.40.99:8888'
+> }
+> handler = urllib.request.ProxyHandler(proxies=proxies)
+> 
+> opener = urllib.request.build_opener(handler)
+> 
+> response = opener.open(request)
+> # ...
+> ~~~
+
+#### 解析
+
+> 1. XPath 解析
+>
+>    ~~~
+>    安装XPath Helper浏览器插件
+>    安装lxml库
+>    ~~~
+>
+>    ~~~python
+>    from lxml import etree
+>    
+>    # XPath解析
+>    tree = etree.parse('XPath解析示例.html')
+>    # //子孙节点    /子节点
+>    li_list = tree.xpath('//ul/li') 
+>    # 标签内容
+>    li_list = tree.xpath('//ul/li/text()') 
+>    # 查找有id属性的
+>    li_list = tree.xpath('//ul/li[@id]')
+>    # 查找id属性值为l1的
+>    li_list = tree.xpath('//ul/li[@id="l1"]')
+>    # 查找有id属性的class属性值
+>    li_list = tree.xpath('//ul/li[@id]/@class')
+>    # 逻辑运算
+>    li_list = tree.xpath('//ul/li[@id="head" and @class="addr"]')
+>    # contains()模糊     starts-with() 
+>    li_list = tree.xpath('//ul/li[contains(@id,"l")]')
+>    li_list = tree.xpath('//ul/li[starts-with(@id,"c")]')
+>    ~~~
+>
+>    
 
