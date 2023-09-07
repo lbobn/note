@@ -449,7 +449,7 @@ request = urllib.request.Request(url,data,headers)
 >
 >    ~~~python
 >    from lxml import etree
->    
+>
 >    # XPath解析
 >    tree = etree.parse('XPath解析示例.html')
 >    # //子孙节点    /子节点
@@ -468,6 +468,8 @@ request = urllib.request.Request(url,data,headers)
 >    li_list = tree.xpath('//ul/li[contains(@id,"l")]')
 >    li_list = tree.xpath('//ul/li[starts-with(@id,"c")]')
 >    ~~~
+>
+> 2. jsonpath解析
 >
 >    
 
