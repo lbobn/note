@@ -471,5 +471,16 @@ request = urllib.request.Request(url,data,headers)
 >
 > 2. jsonpath解析
 >
->    
+> 3. BeautifulSoup解析
+>
+
+#### Selenium
+
+用于web应用程序测试，驱动真正浏览器
+
+[谷歌浏览器驱动]:http://chromedriver.storage.googleapis.com/index.html
+
+
+
+
 
