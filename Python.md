@@ -471,8 +471,56 @@ request = urllib.request.Request(url,data,headers)
 >
 > 2. jsonpath解析
 >
-> 3. BeautifulSoup解析
+>    ~~~properties
+>    安装jsonpath库
+>    $	根对象或元素.
+>    @	当前对象或元素.
+>    . or []	子元素操作符.
+>    ..	递归匹配所有子元素.
+>    *	通配符. 匹配所有对象或元素.
+>    []	下标运算符，JsonPath索引从0开始.
+>    [,]	连接运算符，将多个结果拼成数组返回，JSONPath允许使用别名.
+>    [start:end:step]	数组切片运算符.
+>    ?()	过滤器（脚本）表达式.
+>    ()	脚本表达式.
+>    ~~~
 >
+>    ~~~python
+>    import json
+>    import jsonpath
+>    json = json.load(open('书.json', 'r', encoding='utf-8'))
+>    
+>    # 所有book的author节点
+>    title_list = jsonpath.jsonpath(json, '$.store.book[*].author')
+>    
+>    # 所有author节点
+>    author_list = jsonpath.jsonpath(json, '$..author')
+>    
+>    # store下的所有节点
+>    store_list = jsonpath.jsonpath(json,'$.store.*')
+>    
+>    # store下的所有price节点
+>    price_list = jsonpath.jsonpath(json, '$.store..price')
+>    
+>    # 第三个book节点
+>    book_3 = jsonpath.jsonpath(json, '$..book[2]')
+>    
+>    # 倒数第一个book节点
+>    book_last = jsonpath.jsonpath(json, '$..book[(@.length-1)]')
+>    # $..book[-1:]
+>    
+>    # 前两个book节点
+>    book_pre2 = jsonpath.jsonpath(json, '$..book[:2]')
+>    # $..book[0,1]
+>    ~~~
+>
+> 3. BeautifulSoup解析（简称bs4）
+>
+>    ~~~
+>    
+>    ~~~
+>
+>    
 
 #### Selenium
 
