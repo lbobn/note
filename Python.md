@@ -1,8 +1,116 @@
 Python
 
+## 基础
+
+### 数据容器
+
+> 通用方法 len()
+
+#### 列表
+
+> 可修改
+
+```python
+# 定义
+my_list = list()
+my_list = []
+my_list = ['张三',23,'男']
+# 常用操作
+index = my_list.index(23)
+my_list.insert(1, "学生")
+my_list.append('北京')
+my_list.expend([1,2,3])		 # 批量添加
+del my_list[3]				# 删除
+pop = my_list.pop(4)  	 	 # 返回并删除
+my_list.remove('男')			# 删除第一个匹配项
+my_list3.clear()
+count = my_list3.count("张三")
+```
+
+#### 元组 
+
+> 不可修改
+
+```python
+# 定义，单个元素要加','
+t1 = ()
+t2 = tuple()
+t3 = (1, "Hello", True)
+# 
+```
 
 
-and 和 or 中and具有高优先级
+
+#### 集合
+
+> 不可重复，内容无序
+
+~~~python
+# 定义
+s = set()
+# 用法
+s.add('张三')
+s.remove('张三')
+s.pop('张三')  		# 随机取元素并删除
+# 两个集合的差集
+s1 = {1,2,3}
+s2 = {1,5,6}
+s1.difference(s2)  # 集合1中在集合2中不存在的元素,结果{2,3}
+# 消除两个集合的差集
+s1.difference_update(set8)  # 集合1的结果{2,3}
+# 集合合并
+s1.union(s2)  # {1,2,3,5,6}
+~~~
+
+
+
+#### 字典
+
+> 键值对，key不重复, 值可嵌套其他类型，通过key索引取值
+
+```python
+d = {}
+d = dict()
+d = {'name': '张三', 'age':23}
+# 用法
+# 添加 / 更新
+d['sex'] = '男'
+# 删除
+d.pop('age')
+d.clear()
+d.keys()  # 获取全部key
+# 遍历
+for key in keys:    # 方式1
+for key in d:       # 方式2
+```
+
+#### 字符串
+
+```python
+s = '12hello world21'
+s.index('world')
+s.replace('world','python')
+s.split(' ')
+s.strip('12')
+s.count('2')
+```
+
+> 格式化：
+>
+> ~~~python
+> # %
+> print ("我叫 %s 今年 %d 岁!" % ('小明', 10))
+> # format
+> print("我叫 {} 今年 {} 岁！".format('小明',10))
+> # f-string
+> print(f"我叫 {name} 今年 {age} 岁！")
+> ~~~
+
+| :    | <填充>       | <对齐>                                  | <宽度>   | ,            | <.精度>              | <类别>                               |
+| ---- | ------------ | --------------------------------------- | -------- | ------------ | -------------------- | ------------------------------------ |
+|      | 用于填充空白 | < 左对齐(默认) <br>>右对齐<br>^居中对齐 | 输出宽度 | 千分位间隔符 | 小数位数或字符串长度 | 整数：B,c,d,o,x,X <br>浮点数:e,E,f,% |
+
+注：and 和 or 中and具有高优先级
 
 ```python
 元组只有一个元素时要加 ','
@@ -525,6 +633,10 @@ request = urllib.request.Request(url,data,headers)
 #### Selenium
 
 用于web应用程序测试，驱动真正浏览器
+
+> 1. 下载浏览器驱动
+> 2. 添加到环境变量
+> 3. `from selenium import webdriver`,获取浏览器对象
 
 [谷歌浏览器驱动]:http://chromedriver.storage.googleapis.com/index.html
 
