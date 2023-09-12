@@ -640,7 +640,27 @@ request = urllib.request.Request(url,data,headers)
 
 [谷歌浏览器驱动]:http://chromedriver.storage.googleapis.com/index.html
 
+元素定位
 
+~~~python
+# 根据id来找对象
+button = browser.find_element_by_id('su')
+
+# 根据标签属性找对象
+input = browser.find_element_by_name('wd')
+
+# 根据Xpath语句获取对象
+input1 = browser.find_element_by_xpath('//input[@id="su"]')
+
+# 根据标签名字来获取对象
+inputs = browser.find_elements_by_tag_name('input')
+
+# 根据bs4语法来获取对象，即CSS选择器
+button1 = browser.find_element_by_css_selector('#su')
+
+# 获取链接对象
+links = browser.find_element_by_link_text('图片')
+~~~
 
 
 
