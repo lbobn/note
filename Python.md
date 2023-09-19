@@ -119,6 +119,8 @@ s.[::-1]    # 字符串的反转，即步长-1
 
 ##  函数
 
+> Ctrl + alt + M
+
 ```Python
 # 多返回值
 def test_return():
@@ -662,5 +664,52 @@ button1 = browser.find_element_by_css_selector('#su')
 links = browser.find_element_by_link_text('图片')
 ~~~
 
+交互
 
+> 获取对象，执行操作
+
+无界面
+
+1. Phantomjs 
+
+2. Chrome handless
+
+   > 
+
+### requests
+
+#### 基本使用
+
+> ```python
+> import requests
+> url = "http://www.baidu.com"
+> response = requests.get(url)
+> 
+> response.text
+> response.encoding
+> response.url    
+> response.content
+> response.status_code
+> response.headers
+> ```
+
+#### get请求
+
+~~~python
+response = requests.get(url=url, params=data, headers=headers)
+~~~
+
+#### post请求
+
+~~~python
+response = requests.post(url=url, data=data, headers=headers)
+~~~
+
+#### 代理
+
+```python
+response = requests.get(url=url, headers=headers, proxies=proxies)
+```
+
+#### Cookie登录及验证码
 
