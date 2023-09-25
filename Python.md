@@ -155,35 +155,33 @@ def func():
     name = "lisi"
 ```
 
-> 类型注解
->
-> ~~~python
-> name: str = "张三"
-> is_boy: bool = True
-> 
-> l: list = [1, 2, 3]
-> t: tuple = (1, "nihao", True)
-> s: set = {2, 5, 6, 54}
-> d: dict = {"zhangsan": 23, "lisi": 25}
-> 
-> l2: list[int] = [1, 2, 3]
-> t2: tuple[int, str, bool] = (1, "nihao", True)
-> s2: set[int] = {2, 5, 6, 54}
-> d2: dict[str, int] = {"zhangsan": 23, "lisi": 25}
->     
-> def func2(data: list) -> list:
->     # 返回值注解
->     return data
-> # union类型
-> from typing import Union
-> 
-> l: list[Union[int, str]] = [1, 2, "nihao", "hello"]
-> 
-> def func(data: Union[str, int]) -> Union[str, int]:
->     pass
-> ~~~
->
-> 
+**类型注解**
+
+~~~python
+name: str = "张三"
+is_boy: bool = True
+
+l: list = [1, 2, 3]
+t: tuple = (1, "nihao", True)
+s: set = {2, 5, 6, 54}
+d: dict = {"zhangsan": 23, "lisi": 25}
+
+l2: list[int] = [1, 2, 3]
+t2: tuple[int, str, bool] = (1, "nihao", True)
+s2: set[int] = {2, 5, 6, 54}
+d2: dict[str, int] = {"zhangsan": 23, "lisi": 25}
+    
+def func2(data: list) -> list:
+    # 返回值注解
+    return data
+# union类型
+from typing import Union
+
+l: list[Union[int, str]] = [1, 2, "nihao", "hello"]
+
+def func(data: Union[str, int]) -> Union[str, int]:
+    pass
+~~~
 
 ## 文件
 
@@ -200,6 +198,13 @@ f.flush()
 ~~~
 
 ## 异常、模块、包
+
+- 抛出异常
+
+```python
+raise [Exception [, args [, traceback]]]
+```
+- 捕获异常并处理
 
 ~~~python
 try:
@@ -236,17 +241,39 @@ finally:
 
 > 类和对象
 
+- **`self`**不是关键字，它表示当前对象的地址
+
+- 类变量前加 **`__`** 表示**私有**
+- `@classmethod` **类方法**
+- `@staticmethod` **静态方法**  类名调用
+- 含有**抽象方法**的类为**抽象类**，抽象方法指方法体为**空实现**
+
 ~~~python
 class Student:
-    name = None
-    age = None
+    # 类变量，被所有类对象共享
+    # 公有属性
+    teacher = "张三"  		
+    #定义私有属性,私有属性在类外部无法直接进行访问
+    __id = None
+    
     # 构造方法
-    def __init__(self,name,age):
+    def __init__(self,name,age):   # 实例变量
         self.name = name
         self.age = age
-        
+    
+    # 静态方法
+    @staticmethod    
     def play(self):
         print("玩游戏")
+        
+    # 私有方法
+    def __foo(self):          
+        print('这是私有方法')
+        
+    #类方法
+    @classmethod
+    def setTeacher(cls,name):
+        cls.__teacher = name
         
     # 魔术方法
         def __str__(self):
@@ -298,6 +325,69 @@ huawei = HUAWEI()
 usePhone(iphone) # 玩游戏
 usePhone(huawei) # 看电影
 ~~~
+
+抽象类
+
+```python
+class Animal:
+    def speak(self):
+        pass
+class Dog(Animal):
+    def speak(self):
+        print("汪汪汪")
+```
+
+## 高阶
+
+### 闭包
+
+- `nonlocal`关键字，用于声明全局变量，内部函数可修改此变量
+
+```python
+def creat_account(balance=0):
+    def ATM(money, deposit=True):
+        nonlocal balance  # 声明全局变量
+        if deposit:
+            balance += money
+            print(f"存钱:{money} 余额:{balance}")
+        else:
+            balance -= money
+            print(f"存钱:{money} 余额:{balance}")
+
+    return ATM
+```
+
+### 装饰器
+
+> 装饰器 在不破坏原有函数同时加入新功能
+
+```python
+def outer(func):
+    def inner():
+        print("业务函数执行前新功能")
+        func()
+        print("业务函数执行后新功能")
+
+    return inner
+
+@outer		# 要被包装的函数加上注解
+def function():		# 业务函数
+    pass
+```
+
+### 正则表达式匹配
+
+~~~python
+import re
+s = "hello world"
+re.match("world",s)		# 从头匹配
+re.search("world",s)	# 查找第一子串
+re.findall("world",s)	# 查找所有子串
+r = r"^(\w+(\.\w+)*@(qq|QQ|163|gmail)(\.\w+)+)$"	# 邮箱正则
+re.findall(r,"zxcv@qq.com")	
+~~~
+
+
 
 ## 多任务
 
@@ -554,12 +644,13 @@ request = urllib.request.Request(url,data,headers)
 >
 >    ~~~
 >    安装XPath Helper浏览器插件
+>    	ctrl + shift + x
 >    安装lxml库
 >    ~~~
 >
 >    ~~~python
 >    from lxml import etree
->
+>    
 >    # XPath解析
 >    tree = etree.parse('XPath解析示例.html')
 >    # //子孙节点    /子节点
@@ -599,26 +690,26 @@ request = urllib.request.Request(url,data,headers)
 >    import json
 >    import jsonpath
 >    json = json.load(open('书.json', 'r', encoding='utf-8'))
->    
+>
 >    # 所有book的author节点
 >    title_list = jsonpath.jsonpath(json, '$.store.book[*].author')
->    
+>
 >    # 所有author节点
 >    author_list = jsonpath.jsonpath(json, '$..author')
->    
+>
 >    # store下的所有节点
 >    store_list = jsonpath.jsonpath(json,'$.store.*')
->    
+>
 >    # store下的所有price节点
 >    price_list = jsonpath.jsonpath(json, '$.store..price')
->    
+>
 >    # 第三个book节点
 >    book_3 = jsonpath.jsonpath(json, '$..book[2]')
->    
+>
 >    # 倒数第一个book节点
 >    book_last = jsonpath.jsonpath(json, '$..book[(@.length-1)]')
 >    # $..book[-1:]
->    
+>
 >    # 前两个book节点
 >    book_pre2 = jsonpath.jsonpath(json, '$..book[:2]')
 >    # $..book[0,1]
@@ -627,10 +718,10 @@ request = urllib.request.Request(url,data,headers)
 > 3. BeautifulSoup解析（简称bs4）
 >
 >    ~~~
->    
+>
 >    ~~~
 >
->    
+> 
 
 #### Selenium
 
@@ -712,4 +803,65 @@ response = requests.get(url=url, headers=headers, proxies=proxies)
 ```
 
 #### Cookie登录及验证码
+
+### scrapy
+
+#### 安装
+
+`pip install scrapy`
+
+#### 创建项目
+
+`scrapy startproject 项目名称`
+
+项目结构
+
+~~~
+项目名称
+	项目名称
+		spiders
+			init
+			爬虫文件
+		init
+		items			定义数据结构的地方
+		middleware  	中间件 代理
+		pipelines		管道 处理下载的数据
+		settings 	 	配置文件   robots协议  ua定义等
+		
+
+~~~
+
+response 的属性和方法
+
+~~~
+response.text 	网页源码
+response.body 	二进制
+response.xpath   
+response.extract()		提取selector对象的data属性值 
+response.extract_first()	提取selector列表的第一个数据
+~~~
+
+
+
+#### 创建爬虫文件
+
+`cd ./项目名称/项目名称/spiders`
+
+`scrapy genspider 爬虫名 url`
+
+#### 运行爬虫文件
+
+`scrapy crawl 爬虫名字`
+
+注：需将settings.py文件中的 ROBOTSTXT_OBEY = False  置为False 或 注释掉
+
+Robots协议（也称为爬虫协议、机器人协议等）的全称是“**网络爬虫排除标准**”，robots.txt是搜索引擎访问网站时第一个查看的文件，当我们网站有部分内容不希望收搜索引擎抓取时，就可以通过Robots协议来告诉搜索引擎哪些页面是不能抓取的，大多用来保护网站的隐私，以及一些死链、重复页面等等。
+
+https://www.baidu.com/robots.txt
+
+#### scrapyshell调试
+
+- 安装ipython `pip install ipython`
+- scrapy shell www.baidu.com   终端直接输入
+- 自动进入ipython界面
 

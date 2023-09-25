@@ -520,3 +520,6 @@ unzip 参数1 [-d 参数2]
 
 # 27.远程登录
 
+windows终端连接到linux
+
+`ssh -p 22 root@centos`
