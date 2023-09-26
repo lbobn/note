@@ -827,8 +827,6 @@ response = requests.get(url=url, headers=headers, proxies=proxies)
 		middleware  	中间件 代理
 		pipelines		管道 处理下载的数据
 		settings 	 	配置文件   robots协议  ua定义等
-		
-
 ~~~
 
 response 的属性和方法
@@ -862,6 +860,101 @@ https://www.baidu.com/robots.txt
 #### scrapyshell调试
 
 - 安装ipython `pip install ipython`
-- scrapy shell www.baidu.com   终端直接输入
-- 自动进入ipython界面
+- `scrapy shell www.baidu.com`   终端直接输入
+- 自动进入 ipython 界面
+
+实例：
+
+> `yield`相当return 只返回一次
+
+```python
+# 爬虫文件
+class DangSpider(scrapy.Spider):
+    name = "dang"
+    allowed_domains = ["category.dangdang.com"]
+    start_urls = ["http://category.dangdang.com/cp01.01.01.00.00.00.html"]
+
+    base_url = 'https://category.dangdang.com/pg'
+    page = 1
+
+    def parse(self, response):
+        li_list = response.xpath('//ul[@id="component_59"]/li')
+        # //ul[@id="component_59"]/li/a/img/@data-original
+        # //ul[@id="component_59"]/li/p[@class="price"]/span[1]
+        for li in li_list:
+            # 存在懒加载，滑到指定位置src才会变为真的
+            src = li.xpath('./a/img/@data-original').extract_first()
+            if not src:
+                src = li.xpath('./a/img/@src').extract_first()
+            name = li.xpath('./a/img/@alt').extract_first()
+            price = li.xpath('./p[@class="price"]/span[1]/text()').extract_first()
+            # print(src, name, price)
+            # 导入数据结构类
+            book = ScrapyDangdang02Item(src=src, name=name, price=price)
+            yield book	# 返回对象
+        if self.page < 20:
+            self.page += 1
+            url = self.base_url + str(self.page) + '-cp01.01.01.00.00.00.html'
+
+            yield scrapy.Request(url=url, callback=self.parse)	# 调用parse
+```
+
+```python
+# 数据结构
+import scrapy
+
+
+class ScrapyDangdang02Item(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    # 定义数据结构
+    src = scrapy.Field()
+    name = scrapy.Field()
+    price = scrapy.Field()
+    # pass
+
+```
+
+```python
+# 管道
+from itemadapter import ItemAdapter
+
+
+class ScrapyDangdang02Pipeline:
+    def open_spider(self, spider):
+        self.fp = open('book.json', 'w', encoding='utf-8')
+
+    # 设置管道并在settings开启管道
+    # item 即为  book 对象
+    def process_item(self, item, spider):
+        self.fp.write(str(item))
+        return item
+    
+	
+    def close_spider(self, spider):
+        self.fp.close()
+
+
+import urllib.request
+# 开启多管道（仿照原有类编写）
+#  1.定义管道类
+#  2.在settings中开启管道
+class ScrapyDangdangDownload:
+    def process_item(self, item, spider):
+        url = 'http:' + item.get('src')
+        name = './book/' + item.get('name') + '.jpg'
+        urllib.request.urlretrieve(url=url, filename=name)
+        return item
+```
+
+```python
+# Configure item pipelines
+# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+ITEM_PIPELINES = {
+   # 管道是可以有多个，有优先级的，数字小优先级高
+   "scrapy_dangdang_02.pipelines.ScrapyDangdang02Pipeline": 300,
+   "scrapy_dangdang_02.pipelines.ScrapyDangdangDownload": 301,
+
+}
+```
 
