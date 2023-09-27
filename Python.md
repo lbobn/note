@@ -915,6 +915,10 @@ class ScrapyDangdang02Item(scrapy.Item):
 
 ```
 
+`open_spider(self, spider)`爬虫开启时执行一次
+
+`close_spider(self, spider)`爬虫结束时执行一次
+
 ```python
 # 管道
 from itemadapter import ItemAdapter
