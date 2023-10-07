@@ -962,3 +962,131 @@ ITEM_PIPELINES = {
 }
 ```
 
+#### CrawlSpider 链接提取器
+
+创建爬虫文件
+
+创建命令中加 -t 选项
+
+`scrapy genspider -t crawl read https://www.dushu.com/book/1107_1.html`
+
+```python
+rules = (
+        Rule(
+            LinkExtractor(allow=r"/book/1107_(\d+)\.html"),  # 允许的url,正则表达式
+            callback="parse_item",
+            follow=False  # 表示是否跟随访问,即访问到第二页后还有满足的URL继续访问
+        ),
+    )
+```
+
+#### 写入数据库
+
+在settings文件中写入如下配置
+
+~~~python
+# 数据库连接配置
+DB_HOST = 'localhost'
+DB_PORT = 3306
+DB_USER = 'root'
+DB_PASSWORD = '25gn3umb'
+DB_NAME = 'scrapy_test'
+DB_CHARSET = 'utf8'  # - 不识别
+~~~
+
+在管道文件中定义新管道
+
+```python
+from scrapy.utils.project import get_project_settings 	# 读取settings文件
+import pymysql
+
+
+class MySQLCrawlspiderPipeline:
+    def open_spider(self, spider):
+        settings = get_project_settings()
+        self.DB_HOST = settings['DB_HOST']
+        self.DB_PORT = settings['DB_PORT']
+        self.DB_USER = settings['DB_USER']
+        self.DB_PASSWORD = settings['DB_PASSWORD']
+        self.DB_NAME = settings['DB_NAME']
+        self.DB_CHARSET = settings['DB_CHARSET']
+        self.__connect()  # 连接数据库
+
+    def process_item(self, item, spider):
+        sql = 'insert into book(name,src) values ("{}","{}")'.format(item['name'], item['src'])
+        # 执行SQL并提交
+        self.cursor.execute(sql)	
+        self.conn.commit()
+        return item
+
+    def close_spider(self, spider):
+        self.cursor.close()
+        self.conn.close()
+
+    def __connect(self):
+        self.conn = pymysql.Connection(host=self.DB_HOST,
+                                       port=self.DB_PORT,
+                                       user=self.DB_USER,
+                                       password=self.DB_PASSWORD,
+                                       db=self.DB_NAME,
+                                       charset=self.DB_CHARSET)
+        self.cursor = self.conn.cursor()
+```
+
+#### post请求
+
+```python
+class BaidufanyiSpider(scrapy.Spider):
+    name = "baidufanyi"
+    allowed_domains = ["fanyi.baidu.com"]
+
+    # post请求 没有参数则请求无意义，parse方法也无意义
+    # start_urls = ["https://fanyi.baidu.com/sug"]
+    #
+    # def parse(self, response):
+    #     pass
+
+    def start_requests(self):
+        url = 'https://fanyi.baidu.com/sug'
+
+        data = {
+            'kw': 'final'
+        }
+
+        yield scrapy.FormRequest(url=url, formdata=data, callback=self.parse_second)
+
+    def parse_second(self, response):
+        content = response.text
+
+        obj = json.loads(content)
+        print(obj)
+```
+
+#### 日志
+
+日志等级
+
+- CRITICAL : 严重错误
+
+- ERROR： 一般错误
+
+- WARNING：警告
+
+- INFO：一般信息
+
+- DEBUG：调试信息
+
+  默认为DEBUG
+
+settings.py文件设置
+
+LOG_FILE : 将日志记录到文件中，文件以`.log`结尾
+
+LOG_LEVEL:设置日志等级
+
+```python
+# 日志
+LOG_LEVER = 'ERROR'
+LOG_FILE = 'logdemo.log'
+```
+
