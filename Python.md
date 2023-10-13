@@ -294,6 +294,30 @@ class Student:
 stu = Student("zhangsan",18)
 ~~~
 
+对于私有方法可使用`property`来简化
+
+~~~python
+class Stu:
+    def __init__(self, name):
+        self.__name = name
+
+    @property	
+    def name(self):
+        return self.__name
+
+    @name.setter
+    def name(self, name):
+        self.__name = name
+
+
+if __name__ == '__main__':
+    s = Stu('zhangsan')
+    s.name = 'lisi'
+    print(s.name)
+~~~
+
+
+
 > 封装继承多态
 
 ~~~python
