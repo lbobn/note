@@ -201,3 +201,61 @@ sc = SparkContext(conf=conf)
 - Transformation：转换算子
 - Action：动作算子	
 
+转换算子
+
+1. `map()`: 传入处理函数，对每条数据做处理
+
+2. `flatMap()`: 先对rdd进行map()操作，再进行解除嵌套
+
+3. `reduceByKey()`：针对KV型数据按key分组，根据提供的聚合逻辑，完成组内数据的聚合
+
+4. `mapValues()`：针对二元元组，对其Value执行map操作
+
+5. `groupBy()`：分组,分组完为完整数据
+
+   ```python
+   rdd = sc.parallelize([('a', 1), ('b', 2), ('a', 2), ('b', 3)])
+   result = rdd.groupBy(lambda t: t[0])
+   ```
+
+6. `filter()`:过滤，保留想要的，函数中返回true保留，否则丢弃
+
+   ```python
+   rdd = sc.parallelize([1, 2, 3, 4, 5, 6, 7, 8])
+   rdd_filter = rdd.filter(lambda x: x % 2 == 1)
+   ```
+
+7. `distinct()`: 对RDD数据去重
+
+8. `union()`:两个RDD算子合并为一个返回
+
+9. `join()`：对两个RDD执行join操作,按key进行连接  ，只能用于二元元组
+
+   - `join()`
+   - `leftOuterJoin()`
+   - `rightOuterJoin()`
+
+10. `intersection()`:两个RDD的交集
+
+11. `glom()`：按分区加上嵌套
+
+12. `groupByKey()`：按key分组，分组完取value
+
+13. `sortBy()`:对RDD数据排序
+
+    ```python
+    rdd = sc.parallelize([('a', 1), ('b', 2), ('a', 2), ('b', 3)])
+    result = rdd.sortBy(lambda x: x[1],ascending=True,numPartitions=1)
+    # ascending表示升序还是降序
+    # numPartitions表示按多少分区排序，1表示全局
+    ```
+
+14. `sortByKey()`: 按照key对RDD数据排序
+
+    ```python
+    rdd = sc.parallelize([('a', 1), ('b', 2), ('a', 2), ('B', 3)])
+    result = rdd.sortByKey(ascending=True, numPartitions=1, keyfunc=lambda char: char.lower())
+    ```
+
+Action算子
+
