@@ -523,3 +523,308 @@ unzip 参数1 [-d 参数2]
 windows终端连接到linux
 
 `ssh -p 22 root@centos`
+
+## scp命令
+
+
+
+# 28.shell
+
+## 概述及入门
+
+在脚本文件中首行
+
+```
+#!/bin/bash
+```
+
+执行方式
+
+- `bash test.sh`
+
+- `chmod +x ./test.sh`  #使脚本具有执行权限
+  `./test.sh`  #执行脚本
+- `source test.sh`   /    `. test.sh`
+
+## 变量
+
+### 系统预定义
+
+> 常用系统变量
+>
+> `$HOME` `$PWD` `$SHELL` `$USER`
+>
+> 查看变量值
+>
+> echo $变量
+>
+> 显示所有变量 
+>
+> set
+
+### 自定义变量
+
+> 变量名=变量值，无空格
+>
+> 撤销变量：unset
+>
+> 静态变量 readonly
+
+### 特殊变量
+
+> `$n`:`$0`表示脚本名称，`$1`-`$9`为1-9的参数，10以上要用{},如`${10}`
+>
+> `$#` : 获取输入参数个数，可用于循环
+>
+> `$*`:获取所有参数，是一个整体
+>
+> `$@`:获取所有参数，是一个集合，可用于遍历
+>
+> `$?`: 最后一次执行的命令的返回状态，为0则正常
+
+### 运算符
+
+基本语法
+
+> `$(())` 或`$[]`
+>
+> ```shell
+> $((1+2))
+> $[ 1+2 ]
+> ```
+>
+> 命令替换：`$()` 或  ` (反引号)
+
+### 条件判断
+
+基本语法
+
+> - test condition
+> - [ condition ]       需要有空格
+>
+> ```shell
+> test $a = hello
+> [ $a = hello ]
+> ```
+
+条件判断
+
+> - 字符串
+>
+>   `=`   /    `!=`
+>
+> - 数值判断
+>
+>   `-eq` 等于(equal)					`-ne` 不等于(not equal)
+>
+>   `-lt `小于(less than) 				`-le`小于等于(less equal)
+>
+>   `-gt` 大于(greater than)   		`-ge` 大于等于(greater equal)
+>
+> - 文件
+>
+>   `-r`  有读权限
+>
+>   `-w`	写权限
+>
+>   `-x`	执行权限
+>
+>   `-e` 	文件存在
+>
+>   `-f`	文件存在且是文件
+>
+>   `-d`	文件存在且是文件夹
+>
+>   ```shell
+>   [ -w hello.sh ]	# 表示hello.sh是否可写
+>   ```
+>
+> - 多条件判断
+>
+>   &&  ||  
+>
+>   ```shell
+>   [ 1 -lt 2] && echo "ok" || echo "not ok"
+>   ```
+>
+>   
+
+### 流程控制
+
+- if
+>
+>   - 单分支
+>
+>     ```shell
+>     if [ 条件判断表达式 ]; then
+>     	command
+>     fi
+>     # 或者
+>     if [ 条件判断表达式 ]
+>     then
+>     	command
+>     fi
+>     ```
+>     
+>   - 多分支
+>
+>     ```shell
+>     if condition1
+>     then
+>         command1
+>     elif condition2 
+>     then 
+>         command2
+>     else
+>         commandN
+>     fi
+>     ```
+>
+>   如果使用 **((...))** 作为判断语句，大于和小于可以直接使用 **>** 和 **<**，如
+>
+>   ```shell
+>   if (( 1 > 2 ))
+>   then 
+>   	...
+>   fi
+>   ```
+>
+>   
+
+- for
+
+  > ```shell
+  > for var in item1 item2 ... itemN
+  > do
+  >     command1
+  >     command2
+  >     ...
+  >     commandN
+  > done
+  > 
+  > ```
+  >
+  > 
+
+- while
+
+> ```shell
+> while condition
+> do
+>     command
+> done
+> 
+> ```
+>
+> 无限循环
+>
+> ```shell
+> while true
+> do
+> 	command
+> done
+> # 或者
+> while :
+> do 
+> 	command
+> done
+> # 或者
+> for (( ;  ; ))
+> ```
+>
+> 
+
+- until 
+
+```shell
+until condition
+do
+    command
+done
+```
+
+- case
+
+```shell
+case 值 in
+模式1)
+    command1
+    ...
+    commandN
+    ;;
+模式2)
+    command1
+    ...
+    commandN
+    ;;
+esac
+
+```
+
+_break_ 跳出
+
+_continue_ 跳出当前
+
+### 控制台读取
+
+```bash
+read [-p -t] 变量名
+```
+
+> `-p` 提示
+>
+> `-t` 等待时间（s）
+
+```shell
+read -t 7 -p "请输入您的名字" name
+```
+
+### 函数
+
+系统函数
+
+```bash
+basename [string/path] [suffix]
+dirname 文件绝对路径
+```
+
+> `basename` 用于去除文件名
+>
+> `dirname` 用于去除路径
+
+自定义函数
+
+```bash
+[ function ] add()
+{
+	num=$[$1+$2]
+	echo $num
+} 
+num=$(add $1 $2)
+echo "和："$num
+```
+
+同主机不同用户发消息
+
+`mesg`
+
+```bash
+[zhang@bogon scripts]$ mesg
+is y
+[zhang@bogon scripts]$ write lubb pts/1
+你好，卢博斌
+hbjyhvy
+hello lubb
+^C[zhang@bogon scripts]$
+```
+
+```bash
+^C[zhang@bogon scripts]$ who
+lubb     pts/1        2023-10-31 20:04 (192.168.88.1)
+lubb     pts/3        2023-10-31 20:04 (192.168.88.1)
+root     pts/4        2023-10-31 20:07 (192.168.88.1)
+[zhang@bogon scripts]$ who am i
+root     pts/4        2023-10-31 20:07 (192.168.88.1)
+[zhang@bogon scripts]$
+```
+
